@@ -37,6 +37,18 @@
 - Moveable player
   - Keyboard
 
+### Phase 1 - Review
+
+- Need somewhere to set up a scene
+- Need a pattern to access globals
+  - Input singletons
+  - Frame time
+  - Renderer
+- KeyboardInputSystem doesn't seem like a correct way to do it
+  - Would be nice to have inputs emit actions
+    - Actions would be acted upon in a move/action system
+- Not sure if connection between sprite components and pixi is proper
+
 ## Phase 2 - Player
 
 - Moveable player

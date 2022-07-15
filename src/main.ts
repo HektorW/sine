@@ -15,7 +15,7 @@ import { FrameInfoComponent } from './ecs/components/FrameInfoComponent'
 import { MoveSystem } from './ecs/systems/MoveSystem'
 import { KeyboardInputComponent } from './ecs/components/KeyboardInputComponent'
 import { KeyboardInputSystem } from './ecs/systems/KeyboardInputSystem'
-import { keyboardInputSingleton } from './framework/Singletons'
+import { keyboardInputSingleton } from './framework/singletons'
 import { createComponent } from './utils/componentUtils'
 
 const containerEl = document.querySelector<HTMLDivElement>('#app')!
@@ -59,7 +59,7 @@ ecsWorld.createEntity({
 })
 
 const gameLoop = new GameLoop((time) => {
-	// gameLoop.stop()
+	gameLoop.stop()
 
 	frameInfoEntity.c.time.elapsedS = time.elapsedS
 	frameInfoEntity.c.time.elapsedMs = time.elapsedMs

@@ -1,7 +1,7 @@
 import { Query, System, World } from 'ape-ecs'
 import { Vector } from 'matter-js'
 import { KeyboardKey } from '../../framework/KeyboardInput'
-import { keyboardInputSingleton } from '../../framework/Singletons'
+import { keyboardInputSingleton } from '../../framework/singletons'
 import { getTypedComponents } from '../../utils/entityUtils'
 import { KeyboardInputComponent } from '../components/KeyboardInputComponent'
 import { MoveComponent } from '../components/MoveComponent'
@@ -20,9 +20,7 @@ export class KeyboardInputSystem extends System {
 	update() {
 		const entities = this.keyboardInputMoveQuery.execute()
 		for (const entity of entities) {
-			const moveComponents = getTypedComponents(entity, MoveComponent)
-
-			for (const move of moveComponents) {
+			for (const move of getTypedComponents(entity, MoveComponent)) {
 				const moveVector = Vector.create(0, 0)
 
 				if (keyboardInputSingleton.isKeyDown(KeyboardKey.A)) {

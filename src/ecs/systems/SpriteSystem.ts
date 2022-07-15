@@ -33,16 +33,19 @@ export class SpriteSystem extends System {
 
 		const spriteTransformEntities = this.spriteTransformQuery.execute()
 		for (const entity of spriteTransformEntities) {
-			const spriteComponents = getTypedComponents(entity, SpriteComponent)
-			const transformComponents = getTypedComponents(entity, TransformComponent)
-
-			for (const spriteComponent of spriteComponents) {
+			for (const spriteComponent of getTypedComponents(
+				entity,
+				SpriteComponent
+			)) {
 				const sprite = spriteComponent.sprite
 				if (!sprite) {
 					continue
 				}
 
-				for (const transform of transformComponents) {
+				for (const transform of getTypedComponents(
+					entity,
+					TransformComponent
+				)) {
 					sprite.position.set(transform.x, transform.y)
 					sprite.rotation = transform.angle
 				}

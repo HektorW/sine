@@ -25,11 +25,8 @@ export class MoveSystem extends System {
 	update() {
 		const transformMoveEntities = this.transformMoveQuery.execute()
 		for (const entity of transformMoveEntities) {
-			const transformComponents = getTypedComponents(entity, TransformComponent)
-			const moveComponents = getTypedComponents(entity, MoveComponent)
-
-			for (const transform of transformComponents) {
-				for (const move of moveComponents) {
+			for (const transform of getTypedComponents(entity, TransformComponent)) {
+				for (const move of getTypedComponents(entity, MoveComponent)) {
 					transform.x += this.time.elapsedS * move.direction.x * move.speed
 					transform.y += this.time.elapsedS * move.direction.y * move.speed
 				}
