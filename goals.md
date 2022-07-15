@@ -1,74 +1,82 @@
 # Project goals
 
-* Work with an ECS
-* Create something playable
+- Work with an ECS
+- Create something playable
   - Procedural stages
-* Flexible architecture
-* Playfull
+- Flexible architecture
+- Playfull
 
 ## Focus
 
-* Quickest way forward
+- Quickest way forward
   - Always MVP for playability and fun
-* Stay on current goal
-* No musts
+- Stay on current goal
+- No musts
 
 ## Game goals
 
-* Permadeath
-* Stages
+- Permadeath
+- Stages
   - Infinite
-* Permanent upgrades
-* Multiple attacks
+- Permanent upgrades
+- Multiple attacks
   - Ranged attacks
-* Medium paced controls
+- Medium paced controls
   - Aim
   - Positioning
   - Not timing
-* Mobile first
+- Mobile first
   - Keyboard for development and testing mainly
 
-## First iteration - Boiler
+## Phase 1 - Boiler [DONE]
 
-* Website up
-* ApeECS
-* Vite
-* Pixi
-* Moveable player
-  - Touch and keyboard
+- Website up
+- ApeECS
+- Vite
+- Pixi
+- Moveable player
+  - Keyboard
 
-## Second iteration - Player
+## Phase 2 - Player
 
-* Player shooting
-* A scene
+- Moveable player
+  - touch
+- Player shooting
+- A scene
 
-## Third iteration - Enemies
+## Phase 3 - Enemies
 
-* Enemy moving toward player
-* Player health
-* Enemy health
-* Collisions
+- Enemy moving toward player
+- Player health
+- Enemy health
+- Collisions
 
-## Fourth iteration - Device
+## Phase 4 - Device
 
-* Full screen in mobile
-* Touch controls tweaking
+- Full screen in mobile
+- Touch controls tweaking
+  - touch controls UI
 
-## Fifth iteration - Feedback
+## Phase 5 - Feedback
 
-* Sounds
-* Particles
+- Sounds
+- Particles
 
-## Sixth iteration - Gameplay
+## Phase 6 - Gameplay
 
-* Enemy AI
-* Levels
-* Different attacks
+- Enemy AI
+- Levels
+- Different attacks
+
+## Phase 7 - Style
+
+- Color scheme
+- Graphics style
 
 ## Tech
 
-* Vite
-* ApeECS
-* Pixi
-* (Howler) - sound
-* (Matter) - physics
+- Vite
+- ApeECS
+- Pixi
+- (Howler) - sound
+- (Matter) - physics / math
