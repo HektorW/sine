@@ -1,18 +1,23 @@
 import type { Entity } from 'ape-ecs'
-import type { ConstructorConstraint, TypedComponent } from './componentUtils'
+import type { ComponentConstructor, ComponentInstance } from './componentUtils'
 
-export function getTypedComponents<TConstructor extends ConstructorConstraint>(
+export function getTypedComponents<TConstructor extends ComponentConstructor>(
 	entity: Entity,
 	type: TConstructor
-) {
-	return entity.getComponents(type) as unknown as Set<
-		TypedComponent<TConstructor>
-	>
+): Set<ComponentInstance<TConstructor>> {
+	return entity.getComponents(type)
 }
 
-export function getComponentById<TConstructor extends ConstructorConstraint>(
+export function getTypedOne<TConstructor extends ComponentConstructor>(
+	entity: Entity,
+	type: TConstructor
+): ComponentInstance<TConstructor> | null {
+	return entity.getOne(type) ?? null
+}
+
+export function getComponentById<TConstructor extends ComponentConstructor>(
 	entity: Entity,
 	componentId: string
-) {
-	return entity.c[componentId] as TypedComponent<TConstructor>
+): ComponentInstance<TConstructor> | null {
+	return entity.c[componentId] ?? null
 }

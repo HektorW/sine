@@ -1,34 +1,48 @@
-import { Query, System, World } from 'ape-ecs'
-import { getComponentById, getTypedComponents } from '../../utils/entityUtils'
-import { TypedComponent } from '../../utils/componentUtils'
-import { FrameInfoComponent } from '../components/FrameInfoComponent'
-import { MoveComponent } from '../components/MoveComponent'
+import { Query, World } from 'ape-ecs'
+import { getTypedComponents } from '../../utils/entityUtils'
+import { MoveableComponent } from '../components/MoveableComponent'
 import { TransformComponent } from '../components/TransformComponent'
+import { MoveCommandComponent } from '../components/commands/MoveCommandComponent'
+import { SpriteComponent } from '../components/SpriteComponent'
+import { BaseSystem } from './BaseSystem'
 
-export class MoveSystem extends System {
-	time: TypedComponent<typeof FrameInfoComponent>
-	transformMoveQuery: Query
+export class MoveSystem extends BaseSystem {
+	declare transformMoveQuery: Query
 
 	constructor(world: World, ...initArgs: any[]) {
 		super(world, ...initArgs)
 
-		this.time = getComponentById<typeof FrameInfoComponent>(
-			this.world.getEntity('frame-info')!,
-			'time'
-		)
-
 		this.transformMoveQuery = this.createQuery()
-			.fromAll(TransformComponent, MoveComponent)
+			.fromAll(TransformComponent, MoveableComponent, MoveCommandComponent)
 			.persist()
 	}
 
 	update() {
-		const transformMoveEntities = this.transformMoveQuery.execute()
-		for (const entity of transformMoveEntities) {
+		const frameInfo = this.getFrameInfo()
+
+		for (const entity of this.transformMoveQuery.execute()) {
 			for (const transform of getTypedComponents(entity, TransformComponent)) {
-				for (const move of getTypedComponents(entity, MoveComponent)) {
-					transform.x += this.time.elapsedS * move.direction.x * move.speed
-					transform.y += this.time.elapsedS * move.direction.y * move.speed
+				for (const moveable of getTypedComponents(entity, MoveableComponent)) {
+					for (const moveCommand of getTypedComponents(entity, MoveCommandComponent)) {
+						transform.x += frameInfo.elapsedS * moveCommand.inputVector.x * moveable.speed
+						transform.y += frameInfo.elapsedS * moveCommand.inputVector.y * moveable.speed
+
+						transform.update()
+
+						if (entity.has(SpriteComponent)) {
+							for (const spriteComponent of getTypedComponents(entity, SpriteComponent)) {
+								const sprite = spriteComponent.sprite
+								if (sprite) {
+									sprite.position.x = transform.x
+									sprite.position.y = transform.y
+								}
+							}
+						}
+
+						if (!moveCommand.recurring) {
+							entity.removeComponent(moveCommand)
+						}
+					}
 				}
 			}
 		}

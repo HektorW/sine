@@ -1,8 +1,8 @@
 import { Component } from 'ape-ecs'
-import { Sprite } from 'pixi.js'
+import { Graphics, Sprite } from 'pixi.js'
 
 export type SpriteComponentProperties = {
-	sprite: Sprite | null
+	sprite: Sprite | Graphics | null
 	layer: string
 	color: number
 }

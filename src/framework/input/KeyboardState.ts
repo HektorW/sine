@@ -5,7 +5,7 @@ export enum KeyboardKey {
 	W = 'w',
 }
 
-export class KeyboardInput {
+export class KeyboardState {
 	#keysDown: Partial<Record<KeyboardKey, boolean>> = {}
 	#keysDownLast: Partial<Record<KeyboardKey, boolean>> = {}
 

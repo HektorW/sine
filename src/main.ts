@@ -1,27 +1,31 @@
 import './style.css'
 
 import * as ApeECS from 'ape-ecs'
-import * as PIXI from 'pixi.js'
+import { Vector } from 'matter-js'
+import Stats from 'stats.js'
 
-import rect10x10white from './assets/textures/rect_20x22_white.jpg'
 import { GameLoop } from './framework/GameLoop'
 import { TransformComponent } from './ecs/components/TransformComponent'
 import { SpriteComponent } from './ecs/components/SpriteComponent'
 import { Tags } from './ecs/tags'
 import { SpriteSystem } from './ecs/systems/SpriteSystem'
 import { pixiApp } from './pixi'
-import { MoveComponent } from './ecs/components/MoveComponent'
+import { MoveableComponent } from './ecs/components/MoveableComponent'
 import { FrameInfoComponent } from './ecs/components/FrameInfoComponent'
 import { MoveSystem } from './ecs/systems/MoveSystem'
-import { KeyboardInputComponent } from './ecs/components/KeyboardInputComponent'
+import { KeyboardInputComponent } from './ecs/components/input/KeyboardInputComponent'
 import { KeyboardInputSystem } from './ecs/systems/KeyboardInputSystem'
-import { keyboardInputSingleton } from './framework/singletons'
-import { createComponent } from './utils/componentUtils'
+import { keyboardStateSingleton } from './framework/singletons'
+import { TouchJoystickComponent } from './ecs/components/input/TouchJoystickComponent'
+import { TouchJoystickSystem } from './ecs/systems/TouchJoystickSystem'
+import { MoveCommandComponent } from './ecs/components/commands/MoveCommandComponent'
+import { createTouchjoyStick } from './ecs/entities/touchJoystick'
+import { ShootCommandComponent } from './ecs/components/commands/ShootCommandComponent'
+import { ShootSystem } from './ecs/systems/ShootSystem'
+import { WeaponComponent } from './ecs/components/WeaponComponent'
+import { createPlayer } from './ecs/entities/player'
 
 const containerEl = document.querySelector<HTMLDivElement>('#app')!
-
-const sprite = PIXI.Sprite.from(rect10x10white)
-sprite.tint = 0x00ff00
 
 const ecsWorld = new ApeECS.World()
 
@@ -29,9 +33,13 @@ ecsWorld.registerTags(...Object.values(Tags))
 
 ecsWorld.registerComponent(FrameInfoComponent)
 ecsWorld.registerComponent(KeyboardInputComponent)
-ecsWorld.registerComponent(MoveComponent)
+ecsWorld.registerComponent(MoveableComponent)
 ecsWorld.registerComponent(SpriteComponent)
+ecsWorld.registerComponent(TouchJoystickComponent)
 ecsWorld.registerComponent(TransformComponent)
+ecsWorld.registerComponent(MoveCommandComponent)
+ecsWorld.registerComponent(ShootCommandComponent)
+ecsWorld.registerComponent(WeaponComponent)
 
 const frameInfoEntity = ecsWorld.createEntity({
 	id: 'frame-info',
@@ -43,23 +51,39 @@ const frameInfoEntity = ecsWorld.createEntity({
 })
 
 ecsWorld.registerSystem('frame', KeyboardInputSystem)
+ecsWorld.registerSystem('frame', TouchJoystickSystem)
+ecsWorld.registerSystem('frame', ShootSystem)
 ecsWorld.registerSystem('frame', MoveSystem)
 ecsWorld.registerSystem('frame', SpriteSystem)
 
-ecsWorld.createEntity({
-	components: [
-		createComponent(TransformComponent, {
-			x: pixiApp.view.width / 2,
-			y: pixiApp.view.height / 2,
-		}),
-		createComponent(SpriteComponent, { sprite }),
-		createComponent(MoveComponent, { speed: 300 }),
-		createComponent(KeyboardInputComponent),
-	],
-})
+const player = ecsWorld.createEntity(createPlayer(pixiApp.view))
+
+createTouchjoyStick(
+	ecsWorld,
+	Vector.create(pixiApp.view.width / 4, pixiApp.view.height - pixiApp.view.height / 4),
+	player,
+	[MoveCommandComponent]
+)
+
+createTouchjoyStick(
+	ecsWorld,
+	Vector.create(
+		pixiApp.view.width - pixiApp.view.width / 4,
+		pixiApp.view.height - pixiApp.view.height / 4
+	),
+	player,
+	[ShootCommandComponent]
+)
+
+const stats = new Stats()
+document.body.appendChild(stats.dom)
 
 const gameLoop = new GameLoop((time) => {
-	gameLoop.stop()
+	if (window.location.search.includes('autostop')) {
+		gameLoop.stop()
+	}
+
+	stats.begin()
 
 	frameInfoEntity.c.time.elapsedS = time.elapsedS
 	frameInfoEntity.c.time.elapsedMs = time.elapsedMs
@@ -69,7 +93,9 @@ const gameLoop = new GameLoop((time) => {
 	ecsWorld.runSystems('frame')
 	ecsWorld.tick()
 
-	keyboardInputSingleton.update()
+	keyboardStateSingleton.update()
+
+	stats.end()
 })
 
 gameLoop.start()

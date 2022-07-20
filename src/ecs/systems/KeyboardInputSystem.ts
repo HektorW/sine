@@ -1,10 +1,10 @@
 import { Query, System, World } from 'ape-ecs'
 import { Vector } from 'matter-js'
-import { KeyboardKey } from '../../framework/KeyboardInput'
-import { keyboardInputSingleton } from '../../framework/singletons'
+import { KeyboardKey } from '../../framework/input/KeyboardState'
+import { keyboardStateSingleton } from '../../framework/singletons'
 import { getTypedComponents } from '../../utils/entityUtils'
-import { KeyboardInputComponent } from '../components/KeyboardInputComponent'
-import { MoveComponent } from '../components/MoveComponent'
+import { KeyboardInputComponent } from '../components/input/KeyboardInputComponent'
+import { MoveableComponent } from '../components/MoveableComponent'
 
 export class KeyboardInputSystem extends System {
 	keyboardInputMoveQuery: Query
@@ -13,26 +13,26 @@ export class KeyboardInputSystem extends System {
 		super(world, ...initArgs)
 
 		this.keyboardInputMoveQuery = this.createQuery()
-			.fromAll(KeyboardInputComponent, MoveComponent)
+			.fromAll(KeyboardInputComponent, MoveableComponent)
 			.persist()
 	}
 
 	update() {
 		const entities = this.keyboardInputMoveQuery.execute()
 		for (const entity of entities) {
-			for (const move of getTypedComponents(entity, MoveComponent)) {
+			for (const move of getTypedComponents(entity, MoveableComponent)) {
 				const moveVector = Vector.create(0, 0)
 
-				if (keyboardInputSingleton.isKeyDown(KeyboardKey.A)) {
+				if (keyboardStateSingleton.isKeyDown(KeyboardKey.A)) {
 					moveVector.x += -1
 				}
-				if (keyboardInputSingleton.isKeyDown(KeyboardKey.D)) {
+				if (keyboardStateSingleton.isKeyDown(KeyboardKey.D)) {
 					moveVector.x += 1
 				}
-				if (keyboardInputSingleton.isKeyDown(KeyboardKey.W)) {
+				if (keyboardStateSingleton.isKeyDown(KeyboardKey.W)) {
 					moveVector.y += -1
 				}
-				if (keyboardInputSingleton.isKeyDown(KeyboardKey.S)) {
+				if (keyboardStateSingleton.isKeyDown(KeyboardKey.S)) {
 					moveVector.y += 1
 				}
 

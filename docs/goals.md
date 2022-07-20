@@ -51,6 +51,8 @@
 
 ## Phase 2 - Player
 
+[Phase 2](./phase2.md)
+
 - Moveable player
   - touch
 - Player shooting
@@ -65,6 +67,7 @@
 
 ## Phase 4 - Device
 
+- Viewport dimensions
 - Full screen in mobile
 - Touch controls tweaking
   - touch controls UI
