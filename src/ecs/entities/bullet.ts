@@ -7,12 +7,13 @@ import { MoveableComponent } from '../components/MoveableComponent'
 import { SpriteComponent } from '../components/SpriteComponent'
 import { TransformComponent } from '../components/TransformComponent'
 
+const bulletSize = 8
 const bulletGraphics = new Graphics()
-bulletGraphics.lineStyle(1, 0xffff00, 1)
-bulletGraphics.drawRect(-4, -4, 8, 8)
+bulletGraphics.lineStyle(1, 0xffffff, 1)
+bulletGraphics.drawRect(-bulletSize / 2, -bulletSize / 2, bulletSize, bulletSize)
 bulletGraphics.endFill()
 
-export function createBullet(position: Vector, direction: Vector, speed = 400): IEntityConfig {
+export function createBullet(position: Vector, direction: Vector, speed = 800): IEntityConfig {
 	const graphics = new Graphics(bulletGraphics.geometry)
 
 	graphics.rotation = Math.PI - Math.atan2(direction.x, direction.y)

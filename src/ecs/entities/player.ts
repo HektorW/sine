@@ -10,13 +10,13 @@ export function createPlayer(viewport: { width: number; height: number }): IEnti
 	const rectSize = 20
 
 	const graphics = new Graphics()
-	graphics.beginFill(0x00ffff, 1)
+	graphics.beginFill(0xffffff, 1)
 	graphics.drawRect(-rectSize / 2, -rectSize / 2, rectSize, rectSize)
 	graphics.endFill()
 
 	return {
 		c: {
-			move: createComponent(MoveableComponent, { speed: 300 }),
+			move: createComponent(MoveableComponent, { speed: 500 }),
 			transform: createComponent(TransformComponent, {
 				x: viewport.width / 2,
 				y: viewport.height / 2,
@@ -26,7 +26,7 @@ export function createPlayer(viewport: { width: number; height: number }): IEnti
 		components: [
 			createComponent(SpriteComponent, { sprite: graphics }),
 			createComponent(WeaponComponent, {
-				shotDelayS: 0.2,
+				shotDelayS: 0.1,
 			}),
 		],
 	}

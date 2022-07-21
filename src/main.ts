@@ -13,8 +13,6 @@ import { pixiApp } from './pixi'
 import { MoveableComponent } from './ecs/components/MoveableComponent'
 import { FrameInfoComponent } from './ecs/components/FrameInfoComponent'
 import { MoveSystem } from './ecs/systems/MoveSystem'
-import { KeyboardInputComponent } from './ecs/components/input/KeyboardInputComponent'
-import { KeyboardInputSystem } from './ecs/systems/KeyboardInputSystem'
 import { keyboardStateSingleton } from './framework/singletons'
 import { TouchJoystickComponent } from './ecs/components/input/TouchJoystickComponent'
 import { TouchJoystickSystem } from './ecs/systems/TouchJoystickSystem'
@@ -24,6 +22,7 @@ import { ShootCommandComponent } from './ecs/components/commands/ShootCommandCom
 import { ShootSystem } from './ecs/systems/ShootSystem'
 import { WeaponComponent } from './ecs/components/WeaponComponent'
 import { createPlayer } from './ecs/entities/player'
+import { KeyboardKey } from './framework/input/KeyboardState'
 
 const containerEl = document.querySelector<HTMLDivElement>('#app')!
 
@@ -32,7 +31,6 @@ const ecsWorld = new ApeECS.World()
 ecsWorld.registerTags(...Object.values(Tags))
 
 ecsWorld.registerComponent(FrameInfoComponent)
-ecsWorld.registerComponent(KeyboardInputComponent)
 ecsWorld.registerComponent(MoveableComponent)
 ecsWorld.registerComponent(SpriteComponent)
 ecsWorld.registerComponent(TouchJoystickComponent)
@@ -50,7 +48,6 @@ const frameInfoEntity = ecsWorld.createEntity({
 	},
 })
 
-ecsWorld.registerSystem('frame', KeyboardInputSystem)
 ecsWorld.registerSystem('frame', TouchJoystickSystem)
 ecsWorld.registerSystem('frame', ShootSystem)
 ecsWorld.registerSystem('frame', MoveSystem)
@@ -60,19 +57,31 @@ const player = ecsWorld.createEntity(createPlayer(pixiApp.view))
 
 createTouchjoyStick(
 	ecsWorld,
-	Vector.create(pixiApp.view.width / 4, pixiApp.view.height - pixiApp.view.height / 4),
+	Vector.create(pixiApp.view.width / 8, pixiApp.view.height - pixiApp.view.height / 4),
 	player,
-	[MoveCommandComponent]
+	[MoveCommandComponent],
+	{
+		up: KeyboardKey.W,
+		down: KeyboardKey.S,
+		left: KeyboardKey.A,
+		right: KeyboardKey.D,
+	}
 )
 
 createTouchjoyStick(
 	ecsWorld,
 	Vector.create(
-		pixiApp.view.width - pixiApp.view.width / 4,
+		pixiApp.view.width - pixiApp.view.width / 8,
 		pixiApp.view.height - pixiApp.view.height / 4
 	),
 	player,
-	[ShootCommandComponent]
+	[ShootCommandComponent],
+	{
+		up: KeyboardKey.ArrowUp,
+		down: KeyboardKey.ArrowDown,
+		left: KeyboardKey.ArrowLeft,
+		right: KeyboardKey.ArrowRight,
+	}
 )
 
 const stats = new Stats()

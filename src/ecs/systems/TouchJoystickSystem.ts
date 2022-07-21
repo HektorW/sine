@@ -1,7 +1,7 @@
 import { Entity, Query, System, World } from 'ape-ecs'
 import { Vector } from 'matter-js'
 import { TouchMap } from '../../framework/input/TouchState'
-import { touchStateSingleton } from '../../framework/singletons'
+import { keyboardStateSingleton, touchStateSingleton } from '../../framework/singletons'
 import { createComponent } from '../../utils/componentUtils'
 import { getComponentById, getTypedComponents } from '../../utils/entityUtils'
 import {
@@ -85,6 +85,32 @@ export class TouchJoystickSystem extends System {
 		}
 	}
 
+	#updateVectorFromAlternativeKeys(touchJoystick: TouchJoystickComponentInstance) {
+		const keyMap = touchJoystick.alternativeKeys
+		if (!keyMap) {
+			return
+		}
+
+		const inputVector = Vector.create(0, 0)
+
+		if (keyboardStateSingleton.isKeyDown(keyMap.left)) {
+			inputVector.x += -1
+		}
+		if (keyboardStateSingleton.isKeyDown(keyMap.right)) {
+			inputVector.x += 1
+		}
+		if (keyboardStateSingleton.isKeyDown(keyMap.up)) {
+			inputVector.y += -1
+		}
+		if (keyboardStateSingleton.isKeyDown(keyMap.down)) {
+			inputVector.y += 1
+		}
+
+		if (inputVector.x !== 0 || inputVector.y !== 0) {
+			touchJoystick._activeInputVector = Vector.normalise(inputVector)
+		}
+	}
+
 	#updateTouchJoystickSprites(entity: Entity, touchJoystick: TouchJoystickComponentInstance) {
 		const backgroundSprite = getComponentById<typeof SpriteComponent>(
 			entity,
@@ -118,6 +144,9 @@ export class TouchJoystickSystem extends System {
 		for (const entity of this.#touchJoystickQuery.execute()) {
 			for (const touchJoystick of getTypedComponents(entity, TouchJoystickComponent)) {
 				this.#updateTouchJoystickVector(touchJoystick, activeTouches)
+
+				this.#updateVectorFromAlternativeKeys(touchJoystick)
+
 				this.#emitTouchJoystickCommands(entity, touchJoystick)
 				this.#updateTouchJoystickSprites(entity, touchJoystick)
 			}

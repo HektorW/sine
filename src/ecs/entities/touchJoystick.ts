@@ -5,6 +5,7 @@ import { createComponent } from '../../utils/componentUtils'
 import { SpriteComponent } from '../components/SpriteComponent'
 import {
 	TouchJoystickComponent,
+	TouchJoystickProperties,
 	touchJoystickSpriteBackgroundKey,
 	touchJoystickSpriteIndicatorKey,
 } from '../components/input/TouchJoystickComponent'
@@ -14,7 +15,8 @@ export function createTouchjoyStick(
 	world: World,
 	position: Vector,
 	controlEntity: Entity,
-	commandComponents: BaseInputCommandComponentConstructor[]
+	commandComponents: BaseInputCommandComponentConstructor[],
+	alternativeKeys?: TouchJoystickProperties['alternativeKeys']
 ) {
 	const backgroundRadiusradius = 75
 	const indicatorRadius = 10
@@ -47,6 +49,7 @@ export function createTouchjoyStick(
 					component,
 					entity: controlEntity,
 				})),
+				alternativeKeys,
 			}),
 		},
 	})

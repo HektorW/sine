@@ -3,6 +3,11 @@ export enum KeyboardKey {
 	D = 'd',
 	S = 's',
 	W = 'w',
+
+	ArrowLeft = 'arrowleft',
+	ArrowRight = 'arrowright',
+	ArrowUp = 'arrowup',
+	ArrowDown = 'arrowdown',
 }
 
 export class KeyboardState {
