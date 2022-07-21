@@ -3,7 +3,6 @@
 - Moveable player
   - touch
 - Player shooting
-- A scene
 
 ## Touch input
 

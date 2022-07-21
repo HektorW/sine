@@ -37,7 +37,7 @@
 - Moveable player
   - Keyboard
 
-### Phase 1 - Review
+### Review - (Phase 1)
 
 - Need somewhere to set up a scene
 - Need a pattern to access globals
@@ -56,7 +56,18 @@
 - Moveable player
   - touch
 - Player shooting
-- A scene
+
+### Review - (Phase 2)
+
+- Moved scene setup to later phase
+- Command architecture is nice to work with but unsure of performance
+- Sprite system hase unclear responsibility
+  - Need to streamline handling of transforms and sprites
+- TypeScript pattern for ECS is coming along
+- Connection between pixi, world, game and systems need a structure
+- Need layers in pixi
+  - Bullets appear in front of touch joysticks
+- Not sure how to manage different kind of weapons and attacks
 
 ## Phase 3 - Enemies
 
@@ -79,6 +90,7 @@
 
 ## Phase 6 - Gameplay
 
+- A scene
 - Enemy AI
 - Levels
 - Different attacks
