@@ -23,6 +23,13 @@ export class TouchState {
 	#onTouchStart = (event: TouchEvent) => {
 		event.preventDefault()
 		this.#addTouches(event.changedTouches)
+
+		if (
+			event.touches[0].pageX > window.innerWidth * 0.9 &&
+			event.touches[0].pageY < window.innerHeight * 0.1
+		) {
+			window.location.reload()
+		}
 	}
 
 	#onTouchMove = (event: TouchEvent) => {

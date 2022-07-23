@@ -1,64 +1,69 @@
-import { Query, System, World } from 'ape-ecs'
+import { Entity, Query, System, World } from 'ape-ecs'
 
-import { pixiApp } from '../../pixi'
+import { pixiApp } from '../../framework/pixi'
 import { TransformComponent } from '../components/TransformComponent'
 import { SpriteComponent } from '../components/SpriteComponent'
-import { getTypedComponents, getTypedOne } from '../../utils/entityUtils'
+import { getTypedComponents } from '../../utils/entityUtils'
+import { RigidBodyComponent } from '../components/RigidBodyComponent'
+import { ChangeOp } from '../../constants/apeEcsConstants'
 
 export class SpriteSystem extends System {
-	spriteTransformQuery!: Query
+	#spriteTransformQuery: Query
+	#spriteRigidBodyQuery: Query
 
 	constructor(world: World, ...initArgs: any[]) {
 		super(world, ...initArgs)
 
-		this.spriteTransformQuery = this.createQuery()
+		this.#spriteTransformQuery = this.createQuery()
 			.fromAll(SpriteComponent, TransformComponent)
+			.persist()
+
+		this.#spriteRigidBodyQuery = this.createQuery()
+			.fromAll(SpriteComponent, RigidBodyComponent)
 			.persist()
 
 		this.subscribe(SpriteComponent)
 	}
 
-	update() {
-		this.changes.forEach((componentChange) => {
-			if (componentChange.op === 'add') {
-				if (componentChange.type === SpriteComponent.typeName) {
-					const entity = this.world.getEntity(componentChange.entity)!
-					for (const spriteComponent of getTypedComponents(entity, SpriteComponent)) {
-						if (spriteComponent.sprite) {
-							if (entity.has(TransformComponent)) {
-								const transform = getTypedOne(entity, TransformComponent)
-								if (transform) {
-									spriteComponent.sprite.position.x = transform.x
-									spriteComponent.sprite.position.y = transform.y
-								}
-							}
+	#addEntitySprites(entityId: Entity['id']) {
+		const entity = this.world.getEntity(entityId)
+		if (!entity) {
+			return
+		}
 
-							pixiApp.stage.addChild(spriteComponent.sprite)
-						}
-					}
+		for (const spriteComponent of getTypedComponents(entity, SpriteComponent)) {
+			if (spriteComponent.sprite) {
+				pixiApp.stage.addChild(spriteComponent.sprite)
+			}
+		}
+	}
+
+	#updateComponentChanges() {
+		this.changes.forEach((componentChange) => {
+			if (componentChange.op === ChangeOp.Add) {
+				if (componentChange.type === SpriteComponent.typeName) {
+					this.#addEntitySprites(componentChange.entity)
 				}
 			}
 		})
+	}
 
-		// const spriteTransformEntities = this.spriteTransformQuery.execute()
-		// for (const entity of spriteTransformEntities) {
-		// 	for (const spriteComponent of getTypedComponents(
-		// 		entity,
-		// 		SpriteComponent
-		// 	)) {
-		// 		const sprite = spriteComponent.sprite
-		// 		if (!sprite) {
-		// 			continue
-		// 		}
+	update() {
+		this.#updateComponentChanges()
 
-		// 		for (const transform of getTypedComponents(
-		// 			entity,
-		// 			TransformComponent
-		// 		)) {
-		// 			sprite.position.set(transform.x, transform.y)
-		// 			sprite.rotation = transform.angle
-		// 		}
-		// 	}
-		// }
+		for (const entity of this.#spriteRigidBodyQuery.execute()) {
+			spriteLoop: for (const spriteComponent of getTypedComponents(entity, SpriteComponent)) {
+				const sprite = spriteComponent.sprite
+				if (!sprite) {
+					continue spriteLoop
+				}
+
+				for (const rigidBody of getTypedComponents(entity, RigidBodyComponent)) {
+					sprite.position.x = rigidBody.body.position.x
+					sprite.position.y = rigidBody.body.position.y
+					sprite.rotation = rigidBody.body.angle
+				}
+			}
+		}
 	}
 }

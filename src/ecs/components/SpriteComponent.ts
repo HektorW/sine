@@ -1,5 +1,9 @@
 import { Component } from 'ape-ecs'
 import { Graphics, Sprite } from 'pixi.js'
+import { ComponentInstance } from '../../utils/componentUtils'
+
+export type SpriteComponentConstructor = typeof SpriteComponent
+export type SpriteComponentInstance = ComponentInstance<SpriteComponentConstructor>
 
 export type SpriteComponentProperties = {
 	sprite: Sprite | Graphics | null
@@ -17,10 +21,12 @@ export class SpriteComponent extends Component {
 	}
 
 	preDestroy() {
-		if (this.sprite) {
-			this.sprite.destroy()
+		const ctx = this as unknown as SpriteComponentInstance
+
+		if (ctx.sprite !== null) {
+			ctx.sprite.destroy()
 		}
 
-		this.sprite = null
+		ctx.sprite = null
 	}
 }

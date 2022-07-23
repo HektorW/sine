@@ -49,7 +49,7 @@
     - Actions would be acted upon in a move/action system
 - Not sure if connection between sprite components and pixi is proper
 
-## Phase 2 - Player
+## Phase 2 - Player [DONE]
 
 [Phase 2](./phase2.md)
 
@@ -69,12 +69,21 @@
   - Bullets appear in front of touch joysticks
 - Not sure how to manage different kind of weapons and attacks
 
-## Phase 3 - Enemies
+## Phase 3 - Enemies [DONE]
 
 - Enemy moving toward player
 - Player health
 - Enemy health
 - Collisions
+
+### Review - (Phase 3)
+
+- Bullets need to be cleared when out of bounds
+- Entity creation needs structure
+- Not sure what's a good way of defining behaviour on collisions
+  - Want to have it customizable depending on both colliding objects
+- Not sure if damange should be calculated on impact rather than bullet creation
+  - Would make sense to take possible resistance into account on hit
 
 ## Phase 4 - Device
 
@@ -90,10 +99,12 @@
 
 ## Phase 6 - Gameplay
 
-- A scene
+- Scene management
+- Camera
 - Enemy AI
 - Levels
 - Different attacks
+- Mana / resources
 
 ## Phase 7 - Style
 
